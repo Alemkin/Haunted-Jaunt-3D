@@ -8,12 +8,16 @@ namespace Assets.Scripts
         private bool m_IsPlayerAtExit;
         private float m_Timer;
         private bool m_IsPlayerCaught;
+        private bool m_HasAudioPlayed;
 
         public float FadeDuration = 1f;
         public float DisplayImageDuration = 5f;
         public CanvasGroup ExitBackgroundImageCanvasGroup;
         public GameObject Player;
         public CanvasGroup CaughtBackgroundImageCanvasGroup;
+
+        public AudioSource ExitAudio;
+        public AudioSource CaughtAudio;
 
         private void Start()
         {
@@ -24,10 +28,10 @@ namespace Assets.Scripts
         {
             if (m_IsPlayerAtExit)
             {
-                EndLevel(ExitBackgroundImageCanvasGroup, false);
+                EndLevel(ExitBackgroundImageCanvasGroup, false, ExitAudio);
             } else if (m_IsPlayerCaught)
             {
-                EndLevel(CaughtBackgroundImageCanvasGroup, true);
+                EndLevel(CaughtBackgroundImageCanvasGroup, true, CaughtAudio);
             }
         }
 
@@ -39,8 +43,13 @@ namespace Assets.Scripts
             }
         }
 
-        private void EndLevel(CanvasGroup imageCanvasGroup, bool doRestart)
+        private void EndLevel(CanvasGroup imageCanvasGroup, bool doRestart, AudioSource audioSource)
         {
+            if (!m_HasAudioPlayed)
+            {
+                audioSource.Play();
+                m_HasAudioPlayed = true;
+            }
             m_Timer += Time.deltaTime;
             imageCanvasGroup.alpha = m_Timer / FadeDuration;
 
