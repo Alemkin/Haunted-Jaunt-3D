@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Assets.Scripts
 {
@@ -6,24 +7,27 @@ namespace Assets.Scripts
     {
         private bool m_IsPlayerAtExit;
         private float m_Timer;
+        private bool m_IsPlayerCaught;
 
         public float FadeDuration = 1f;
         public float DisplayImageDuration = 5f;
         public CanvasGroup ExitBackgroundImageCanvasGroup;
         public GameObject Player;
+        public CanvasGroup CaughtBackgroundImageCanvasGroup;
 
-        // Start is called before the first frame update
         private void Start()
         {
         
         }
 
-        // Update is called once per frame
         private void Update()
         {
             if (m_IsPlayerAtExit)
             {
-                EndLevel();
+                EndLevel(ExitBackgroundImageCanvasGroup, false);
+            } else if (m_IsPlayerCaught)
+            {
+                EndLevel(CaughtBackgroundImageCanvasGroup, true);
             }
         }
 
@@ -35,15 +39,26 @@ namespace Assets.Scripts
             }
         }
 
-        private void EndLevel()
+        private void EndLevel(CanvasGroup imageCanvasGroup, bool doRestart)
         {
             m_Timer += Time.deltaTime;
-            ExitBackgroundImageCanvasGroup.alpha = m_Timer / FadeDuration;
+            imageCanvasGroup.alpha = m_Timer / FadeDuration;
 
-            if (m_Timer > FadeDuration + DisplayImageDuration)
+            if (!(m_Timer > FadeDuration + DisplayImageDuration)) return;
+
+            if (doRestart)
+            {
+                SceneManager.LoadScene(0);
+            }
+            else
             {
                 Application.Quit();
             }
+        }
+
+        public void CaughtPlayer()
+        {
+            m_IsPlayerCaught = true;
         }
     }
 }

@@ -11,14 +11,12 @@ namespace Assets.Scripts
         private Animator m_Animator;
         private Rigidbody m_RigidBody;
 
-        // Start is called before the first frame update
         private void Start()
         {
             m_Animator = GetComponent<Animator>();
             m_RigidBody = GetComponent<Rigidbody>();
         }
 
-        // Update is called once per frame
         private void FixedUpdate()
         {
             var horizontal = Input.GetAxis("Horizontal");
